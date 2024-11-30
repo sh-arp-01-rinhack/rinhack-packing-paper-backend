@@ -5,7 +5,10 @@ spring:
 ---
 
 server:
-  port: 4444
+  address: 192.168.0.117
+  port: 8080
+  servlet:
+    context-path: /api
   error:
     include-message: always
 spring:
