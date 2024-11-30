@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: prod
+
+---
+
+server:
+  port: 4444
+  error:
+    include-message: always
+spring:
+  application:
+    name: report
+external-api:
+  baseUrl: https://hygieia.fast-report.com/
+  login: apikey
+  token: toinotuk6cspof759edm7sxto81dhxur6s89pfm3e3bxh1ce8kuo
+
