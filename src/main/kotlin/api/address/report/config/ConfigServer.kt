@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
@@ -21,7 +22,6 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Value("\${cors.origin}")
     private val origin: String = ""
 
-
     override fun addCorsMappings(corsRegistry: CorsRegistry) {
         corsRegistry.addMapping("/**").allowCredentials(true).allowedOrigins(origin)
             .allowedMethods("GET", "PUT", "POST", "OPTIONS", "DELETE").allowedHeaders("*").maxAge(3600)
@@ -33,7 +33,7 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
         corsConfiguration.allowCredentials = true
         corsConfiguration.addAllowedHeader("*")
         corsConfiguration.addAllowedMethod("*")
-        corsConfiguration.addAllowedOrigin(origin)
+        corsConfiguration.allowedOrigins = listOf(origin, "http://localhost:4200")
         corsConfiguration.addExposedHeader(HttpHeaders.SET_COOKIE)
         val corsConfigurationSource = UrlBasedCorsConfigurationSource()
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration)
@@ -43,12 +43,13 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
+            .cors(Customizer.withDefaults())
+            .csrf{
+                it.disable()
+            }
             .addFilterAt(apiKeyFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange {
                 it.anyExchange().permitAll()
-            }
-            .csrf{
-                it.disable()
             }
             .build()
     }
