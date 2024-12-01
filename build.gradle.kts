@@ -17,11 +17,16 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui")
+    }
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.4.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

@@ -8,6 +8,7 @@ import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
@@ -15,8 +16,10 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.config.CorsRegistry
+import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
+@EnableWebFluxSecurity
 @Configuration
 class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Value("\${cors.origin}")
@@ -33,7 +36,7 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
         corsConfiguration.allowCredentials = true
         corsConfiguration.addAllowedHeader("*")
         corsConfiguration.addAllowedMethod("*")
-        corsConfiguration.allowedOrigins = listOf(origin, "http://localhost:4200")
+        corsConfiguration.allowedOrigins = listOf("http://localhost:4200")
         corsConfiguration.addExposedHeader(HttpHeaders.SET_COOKIE)
         val corsConfigurationSource = UrlBasedCorsConfigurationSource()
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration)
@@ -49,7 +52,11 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
             }
             .addFilterAt(apiKeyFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange {
-                it.anyExchange().permitAll()
+
+                it
+                    .pathMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    .anyExchange().permitAll()
             }
             .build()
     }
