@@ -43,7 +43,9 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
-            .cors(Customizer.withDefaults())
+            .cors{
+                it.disable()
+            }
             .csrf{
                 it.disable()
             }
