@@ -22,10 +22,10 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Value("\${cors.origin}")
     private val origin: String = ""
 
-    override fun addCorsMappings(corsRegistry: CorsRegistry) {
-        corsRegistry.addMapping("/**").allowCredentials(true).allowedOrigins(origin)
-            .allowedMethods("GET", "PUT", "POST", "OPTIONS", "DELETE").allowedHeaders("*").maxAge(3600)
-    }
+//    override fun addCorsMappings(corsRegistry: CorsRegistry) {
+//        corsRegistry.addMapping("/**").allowCredentials(true).allowedOrigins(origin)
+//            .allowedMethods("GET", "PUT", "POST", "OPTIONS", "DELETE").allowedHeaders("*").maxAge(3600)
+//    }
 
     @Bean
     fun corsWebFilter(): CorsWebFilter {
