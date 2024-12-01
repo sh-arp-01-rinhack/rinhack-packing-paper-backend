@@ -22,33 +22,9 @@ class ConfigServer(private val apiKeyFilter: ApiKeyFilter) : WebFluxConfigurer {
     @Value("\${cors.origin}")
     private val origin: String = ""
 
-//    override fun addCorsMappings(corsRegistry: CorsRegistry) {
-//        corsRegistry.addMapping("/**").allowCredentials(true).allowedOrigins(origin)
-//            .allowedMethods("GET", "PUT", "POST", "OPTIONS", "DELETE").allowedHeaders("*").maxAge(3600)
-//    }
-
-    @Bean
-    fun corsWebFilter(): CorsWebFilter {
-        val corsConfiguration = CorsConfiguration()
-        corsConfiguration.allowCredentials = true
-        corsConfiguration.addAllowedHeader("*")
-        corsConfiguration.addAllowedMethod("*")
-        corsConfiguration.allowedOrigins = listOf(origin, "http://localhost:4200")
-        corsConfiguration.addExposedHeader(HttpHeaders.SET_COOKIE)
-        val corsConfigurationSource = UrlBasedCorsConfigurationSource()
-        corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration)
-        return CorsWebFilter(corsConfigurationSource)
-    }
-
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
-            .cors{
-                it.disable()
-            }
-            .csrf{
-                it.disable()
-            }
             .addFilterAt(apiKeyFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange {
                 it.anyExchange().permitAll()
