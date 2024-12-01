@@ -14,7 +14,6 @@ class ApiKeyFilter(private val apiKeyService: ApiKeyService) : WebFilter {
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val apiKey = exchange.request.headers.getFirst("X-API-KEY")
-
         if (!apiKeyService.validateApiKey(apiKey)) {
             exchange.response.statusCode = HttpStatus.UNAUTHORIZED
             return exchange.response.setComplete()
